@@ -1,7 +1,9 @@
+from __future__ import absolute_import
 import csv
 import gzip
 import logging
 from cStringIO import StringIO
+from six.moves import map
 
 logger = logging.getLogger('veppy')
 
@@ -90,9 +92,9 @@ class CsvReader(FileReader):
             self._headers = list(self.headercols)
 
     def next(self):
-        parsed_row = self._process_next(super(CsvReader, self).next())
+        parsed_row = self._process_next(next(super(CsvReader, self)))
         while parsed_row is None:
-            parsed_row = self._process_next(super(CsvReader, self).next())
+            parsed_row = self._process_next(next(super(CsvReader, self)))
         return parsed_row
 
     def _process_next(self, line):
@@ -289,7 +291,7 @@ class VcfReader(FileReader):
             'stop': vcf_obj.POS + len(vcf_obj.REF) - 1,
             'chromosome': vcf_obj.CHROM,
             'reference_allele': vcf_obj.REF,
-            'alternate_alleles': map(self._get_alternate, vcf_obj.ALT),
+            'alternate_alleles': list(map(self._get_alternate, vcf_obj.ALT)),
             'info': vcf_obj.INFO
         }
 
@@ -297,4 +299,4 @@ class VcfReader(FileReader):
         return self
 
     def next(self):
-        return self.vcf_to_dict(self.reader.next())
+        return self.vcf_to_dict(next(self.reader))

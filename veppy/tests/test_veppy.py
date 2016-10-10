@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 import logging
@@ -6,6 +8,7 @@ from unittest import TestCase
 
 from veppy.veppy import calculate_consequences
 from veppy.utils.readers import VcfReader
+from six.moves import map
 
 logger = logging.getLogger('test')
 
@@ -78,18 +81,18 @@ class VepVcfTest(TestCase):
                     set(required_effects), set(pruned_results)
                 )
 
-        except AssertionError, e:
-            print '-------------------------------------'
-            print '-------------------------------------'
-            print '   VARIANT: ', str(variant)
-            print '  REQUIRED: ', list(required_effects)
-            print 'DISALLOWED: ', disallowed_effects
-            print '   RESULTS: ', map(
+        except AssertionError as e:
+            print('-------------------------------------')
+            print('-------------------------------------')
+            print('   VARIANT: ', str(variant))
+            print('  REQUIRED: ', list(required_effects))
+            print('DISALLOWED: ', disallowed_effects)
+            print('   RESULTS: ', list(map(
                 str,
                 transcript_results.get(transcript_id, [])
-            )
-            print '-------------------------------------'
-            print '-------------------------------------'
+            )))
+            print('-------------------------------------')
+            print('-------------------------------------')
             raise AssertionError(e)
 
     def _test(self, filepath):

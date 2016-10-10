@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import logging
 
@@ -15,14 +16,13 @@ from .. import SUPPORTED_BUILDS
 from .. import SOURCE_DATA_MD5
 from .. import MD5_CHECK_FAIL
 from .. import errors
+import six
+from six.moves import range
 
 logger = logging.getLogger('veppy')
 
 
-class FastaFile(object):
-    __metaclass__ = ABCMeta
-
-    # -- Util methods
+class FastaFile(six.with_metaclass(ABCMeta, object)):
     @classmethod
     def load_build(klass, build):
         try:
@@ -30,7 +30,7 @@ class FastaFile(object):
             if not klass.BUILD_CACHE.get(translated_build):
                 klass.BUILD_CACHE[translated_build] = \
                     klass(build, klass.filepath_for_build(translated_build))
-        except (FastaNotFound, errors.FastaFileException), e:
+        except (FastaNotFound, errors.FastaFileException) as e:
             logger.fatal(
                 'Error loading FastA file for build %s: %s' % (build, e)
             )
@@ -101,7 +101,7 @@ class FastaFile(object):
 
         # TODO: eventually, this should be dynamic and file-specific
         self.chromosomes = \
-            map(lambda x: str(x), range(1, 23)) + ['MT', 'X', 'Y']
+            [str(x) for x in range(1, 23)] + ['MT', 'X', 'Y']
 
     def get(self, chromosome, start, stop):
         fasta_chromosome = self.get_chromosome(chromosome)

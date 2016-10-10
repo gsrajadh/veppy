@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import logging
 from glob import glob
@@ -20,14 +21,13 @@ from .utils import helpers
 from . import errors
 from . import SUPPORTED_BUILDS
 from . import FEATURE_LIMIT
+import six
 
 
 logger = logging.getLogger('veppy')
 
 
-class FeatureFile(object):
-    __metaclass__ = ABCMeta
-
+class FeatureFile(six.with_metaclass(ABCMeta, object)):
     class BoundedCache(object):
         def __init__(self, size=1024):
             self._cache = [None] * size

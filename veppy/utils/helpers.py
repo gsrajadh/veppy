@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import logging
 
@@ -70,7 +71,7 @@ def set_defaults(transcripts):
     for transcript in transcripts:
         _groups[transcript.gene].append(transcript)
 
-    default_gene = get_default_gene(_groups.keys())
+    default_gene = get_default_gene(list(_groups.keys()))
     if default_gene:
         default_gene.default = True
 

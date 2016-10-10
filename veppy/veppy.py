@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 
 from . import features
@@ -8,6 +9,7 @@ from .utils import helpers
 from .sequence import CodingSequenceBuilder
 from .splice_model import SpliceJunctionModel
 from .utils.codons import split_into_codons
+from six.moves import range
 
 logger = logging.getLogger('veppy')
 

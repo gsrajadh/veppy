@@ -1,9 +1,13 @@
+from __future__ import absolute_import
 import sys
 from collections import namedtuple
 
 from .features import EffectiveVariant
 from .utils import codons
 from .utils import fasta
+from six.moves import map
+from six.moves import range
+from six.moves import zip
 
 
 Coordinate = \
@@ -207,7 +211,7 @@ class CodingSequenceBuilder(object):
             (ref_seq, ref_genomic_coordinates) = self.build(
                 variant.chromosome, ref_coding_start, ref_coding_stop)
             ref_coding_coordinates = \
-                range(ref_coding_start, ref_coding_stop + 1)
+                list(range(ref_coding_start, ref_coding_stop + 1))
 
         # build symmetric upstream/downstream codon buffer around ref
         # TODO: need to bound upstream_seq and downstream_seq
@@ -224,7 +228,7 @@ class CodingSequenceBuilder(object):
                 variant.chromosome, upstream_coding_start,
                 upstream_coding_stop)
         upstream_coding_coordinates = \
-            range(upstream_coding_start, upstream_coding_stop + 1)
+            list(range(upstream_coding_start, upstream_coding_stop + 1))
 
         # downstream
         (downstream_coding_start, downstream_coding_stop) = (
@@ -236,28 +240,25 @@ class CodingSequenceBuilder(object):
                 variant.chromosome, downstream_coding_start,
                 downstream_coding_stop)
         downstream_coding_coordinates = \
-            range(downstream_coding_start, downstream_coding_stop + 1)
+            list(range(downstream_coding_start, downstream_coding_stop + 1))
 
         # -- Alternate
         # build alt seq...
         # complement if negative strand...
         if self.strand == '-':
-            (ref_seq, alt_allele, upstream_seq, downstream_seq) = map(
+            (ref_seq, alt_allele, upstream_seq, downstream_seq) = list(map(
                 CodingSequenceBuilder.complement_sequence,
                 (ref_seq, alt_allele, upstream_seq, downstream_seq)
-            )
+            ))
             (
                 ref_genomic_coordinates,
                 upstream_genomic_coordinates,
                 downstream_genomic_coordinates
-            ) = map(
-                lambda x: x[::-1],
-                (
-                    ref_genomic_coordinates,
-                    upstream_genomic_coordinates,
-                    downstream_genomic_coordinates
-                )
-            )
+            ) = [x[::-1] for x in (
+                ref_genomic_coordinates,
+                upstream_genomic_coordinates,
+                downstream_genomic_coordinates
+            )]
 
         if variant.is_insertion:
             i0 = coding_start - coding_start_round
@@ -318,7 +319,7 @@ class CodingSequenceBuilder(object):
 
         # NOTE: these are all CODING (!!!) sequences
         return BuilderResult(
-            range(coding_start, coding_stop + 1),
+            list(range(coding_start, coding_stop + 1)),
             CodingSequence(
                 ref_seq,
                 ref_genomic_coordinates,
@@ -376,7 +377,7 @@ class CodingSequenceBuilder(object):
         codon_genomic_coordinates = []
         for gr in genomic_ranges:
             codon_genomic_coordinates.extend(
-                range(gr.start, gr.stop + 1)
+                list(range(gr.start, gr.stop + 1))
             )
 
         return (seq, codon_genomic_coordinates)

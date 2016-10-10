@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import sys
 import logging
@@ -51,7 +52,7 @@ MD5_CHECK_FAIL = os.environ.get('MD5_CHECK_FAIL', False)
 SUPPORTED_BUILDS = os.environ.get(
     'SUPPORTED_BUILDS', 'GRCh37').split(',')
 
-SUPPORTED_GENE_MODELS = SOURCE_DATA['GRCh37']['feature'].keys()
+SUPPORTED_GENE_MODELS = list(SOURCE_DATA['GRCh37']['feature'].keys())
 
 FEATURE_LIMIT = int(os.getenv('FEATURE_LIMIT', sys.maxint))
 

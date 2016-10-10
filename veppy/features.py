@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import sys
 import re
 import logging
@@ -7,6 +8,8 @@ from bisect import bisect
 from collections import defaultdict, namedtuple
 
 from . import errors
+from six.moves import map
+from six.moves import range
 
 logger = logging.getLogger('veppy')
 
@@ -265,7 +268,7 @@ class ParentFeature(Feature):
                     # start counting at 1!
                     feature.number = i + 1
                     feature.total = len(features)
-        except Exception, e:
+        except Exception as e:
             logger.warn('Invalid feature %s' % self)
             logger.warn(e)
             self.errors = True
@@ -629,7 +632,7 @@ class Transcript(DefaultFeatureMixin, ParentFeature):
             return genomic_ranges
 
         def __str__(self):
-            return 'coding sequences: %s' % map(str, self._tree)
+            return 'coding sequences: %s' % list(map(str, self._tree))
 
 
 class EnsemblTranscript(Transcript):

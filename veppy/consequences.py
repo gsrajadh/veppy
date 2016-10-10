@@ -1,4 +1,5 @@
-import functions
+from __future__ import absolute_import
+from . import functions
 
 
 def to_dict(csq):
